@@ -226,23 +226,23 @@ class Explorer(Node):
                     if int(grid[neighbor[1]][neighbor[0]]) == 100 or neighbor in close_set:
                         # self.get_logger().info(f'Obstacle detected at {neighbor}')
                         continue
-                    # for k,l in self.dir:
-                    #     for n in range(1, 6):
-                    #         new_x = neighbor[0] + k * n
-                    #         new_y = neighbor[1] + l * n
-                    #         if 0 <= new_x < grid.shape[1] and 0 <= new_y < grid.shape[0]:
-                    #             if int(grid[new_y][new_x]) == 100:
-                    #                 cont = True
-                    #                 break
-                    #             # self.get_logger().info(f'Checking {neighbor}\'s neighbor, {new_x}, {new_y}')
-                    #     if cont:
-                    #         break
-                    #     else:
-                    #         # self.get_logger().info(f'{neighbor}\'s neighbor cleared')
-                    #         pass
-                    # if cont:
-                    #     self.get_logger().info(f"Obstacle detected at {neighbor}'s neighbor")
-                    #     continue
+                    for k,l in self.dir:
+                        for n in range(1, 4):
+                            new_x = neighbor[0] + k * n
+                            new_y = neighbor[1] + l * n
+                            if 0 <= new_x < grid.shape[1] and 0 <= new_y < grid.shape[0]:
+                                if int(grid[new_y][new_x]) == 100:
+                                    cont = True
+                                    break
+                                # self.get_logger().info(f'Checking {neighbor}\'s neighbor, {new_x}, {new_y}')
+                        if cont:
+                            break
+                        else:
+                            # self.get_logger().info(f'{neighbor}\'s neighbor cleared')
+                            pass
+                    if cont:
+                        self.get_logger().info(f"Obstacle detected at {neighbor}'s neighbor")
+                        continue
                     tentative_g_score = gscore[current] + heuristic(current, neighbor)
                     if neighbor not in open_set or tentative_g_score < gscore.get(neighbor, float('inf')):
                         came_from[neighbor] = current

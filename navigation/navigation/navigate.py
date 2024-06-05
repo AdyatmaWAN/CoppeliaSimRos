@@ -129,8 +129,8 @@ class Navigate(Node):
 
                 cmd_vel = Twist()
 
-                if distance > 0.0001:
-                    cmd_vel.linear.y = np.min([0.2 * distance, 0.2])
+                if distance > 0.05:
+                    cmd_vel.linear.y = np.min([0.4 * distance, 0.2])
                     cmd_vel.angular.z = 2.0 * theta
                 else:
                     cmd_vel.linear.x = 0.0
@@ -138,7 +138,7 @@ class Navigate(Node):
 
                 self.publisher_cmd_vel.publish(cmd_vel)
 
-                if distance <= 0.1:
+                if distance <= 0.5:
                     self.get_logger().info(f'Reached goal point: {goal_point.x}, {goal_point.y}')
                     self.robot_path.poses.pop(-1)
 
