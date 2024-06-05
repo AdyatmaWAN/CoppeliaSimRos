@@ -41,6 +41,8 @@ class GridMapVisualizer(Node):
         image[grid == 100] = 0  # Occupied spaces to black
         image[grid == 0] = 127  # Unknown spaces to gray
 
+        cv2.circle(image, (10, 10), 5, (0, 255, 0), -1)
+
         # Draw robot pose
         cv2.circle(image, (int(self.robot_pose.x), int(self.robot_pose.y)), 3, (0, 255, 0), -1)
         # Draw robot direction

@@ -41,7 +41,8 @@ class Explorer(Node):
         self.goal_point = None
         self.current_path = None
         self.update = True
-        self.directions = [(-2, 0), (2, 0), (0, -2), (0, 2)]
+        self.directions = [(-5, 0), (5, 0), (0, -5), (0, 5)]
+        self.dir = [(-1,0), (1, 0), (0, -1), (0, 1)]
         # self.directions = [(-5, 0), (5, 0), (0, -5), (0, 5), (-10, -10), (-10, 10), (10, -10), (10, 10)]
 
     def update_callback(self, msg):
@@ -83,6 +84,7 @@ class Explorer(Node):
             pose_stamped.pose.orientation.w = 1.0  # Assuming no orientation, quaternion (0,0,0,1)
             path_msg.poses.append(pose_stamped)
             # cv2.circle(image, (point[0], point[1]), 5, (0, 255, 0), -1)  # Green circle at path point
+            print(f'point = {point[0]}, {point[1]}')
 
         # flip y axis
         # flipped_image = np.flipud(image)
@@ -133,17 +135,28 @@ class Explorer(Node):
         while oheap:
             current = heapq.heappop(oheap)[1]
 
-            if grid[current[1], current[0]] == -1:
+            if int(grid[current[1], current[0]]) == -1:
                 return current
 
             close_set.add(current)
             open_set.remove(current)  # Remove from open set when popped from heap
 
             for i, j in self.directions:
+                cont = False
                 neighbor = current[0] + i, current[1] + j
-                if 0 <= neighbor[0] < grid.shape[0] and 0 <= neighbor[1] < grid.shape[1]:
-                    if grid[neighbor[1]][neighbor[0]] == 100 or neighbor in close_set:
+                if 0 <= neighbor[0] < grid.shape[1] and 0 <= neighbor[1] < grid.shape[0]:
+                    if int(grid[neighbor[1]][neighbor[0]]) == 100 or neighbor in close_set:
                         continue
+                    # for k,l in self.dir:
+                    #     for n in range(1, 11):
+                    #         new_x = neighbor[0] + k * n
+                    #         new_y = neighbor[1] + l * n
+                    #         if 0 <= new_x < grid.shape[1] and 0 <= new_y < grid.shape[0]:
+                    #             if int(grid[new_y][new_x]) == 100:
+                    #                 cont = True
+                    #                 break
+                    # if cont:
+                    #     continue
                     tentative_g_score = gscore[current] + heuristic(current, neighbor)
                     if neighbor not in open_set or tentative_g_score < gscore.get(neighbor, float('inf')):
                         came_from[neighbor] = current
@@ -203,12 +216,33 @@ class Explorer(Node):
 
             close_set.add(current)
             open_set.remove(current)  # Remove from open set when popped from heap
-
+            # print(grid.shape[0], grid.shape[1]) 400 600
             for i, j in self.directions:
+                cont = False
                 neighbor = current[0] + i, current[1] + j
-                if 0 <= neighbor[0] < grid.shape[0] and 0 <= neighbor[1] < grid.shape[1]:
-                    if grid[neighbor[1]][neighbor[0]] == 100 or neighbor in close_set:
+                if 0 <= neighbor[0] < grid.shape[1] and 0 <= neighbor[1] < grid.shape[0]:
+                    if int(grid[neighbor[1], neighbor[0]]) == 100:
+                        self.get_logger().info(f'grid = 100 at {neighbor}')
+                    if int(grid[neighbor[1]][neighbor[0]]) == 100 or neighbor in close_set:
+                        # self.get_logger().info(f'Obstacle detected at {neighbor}')
                         continue
+                    # for k,l in self.dir:
+                    #     for n in range(1, 6):
+                    #         new_x = neighbor[0] + k * n
+                    #         new_y = neighbor[1] + l * n
+                    #         if 0 <= new_x < grid.shape[1] and 0 <= new_y < grid.shape[0]:
+                    #             if int(grid[new_y][new_x]) == 100:
+                    #                 cont = True
+                    #                 break
+                    #             # self.get_logger().info(f'Checking {neighbor}\'s neighbor, {new_x}, {new_y}')
+                    #     if cont:
+                    #         break
+                    #     else:
+                    #         # self.get_logger().info(f'{neighbor}\'s neighbor cleared')
+                    #         pass
+                    # if cont:
+                    #     self.get_logger().info(f"Obstacle detected at {neighbor}'s neighbor")
+                    #     continue
                     tentative_g_score = gscore[current] + heuristic(current, neighbor)
                     if neighbor not in open_set or tentative_g_score < gscore.get(neighbor, float('inf')):
                         came_from[neighbor] = current

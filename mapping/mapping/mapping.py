@@ -30,8 +30,8 @@ class GridMapBuilder(Node):
             10)
         
         # Grid map parameters
-        self.map_size_x = 10  # in meters
-        self.map_size_y = 10  # in meters
+        self.map_size_x = 20  # in meters
+        self.map_size_y = 30  # in meters
         self.resolution = 0.05  # meters per cell
         self.grid_size_x = int(self.map_size_x / self.resolution)
         self.grid_size_y = int(self.map_size_y / self.resolution)
@@ -44,7 +44,7 @@ class GridMapBuilder(Node):
         self.current_pose = msg
         grid_x = int((self.current_pose.x / self.resolution) + (self.grid_size_x / 2))
         grid_y = int((self.current_pose.y / self.resolution) + (self.grid_size_y / 2))
-
+        print('Robot pose:', grid_x, grid_y)
         msg = Pose2D()
         msg.x = float(grid_x)
         msg.y = float(grid_y)
@@ -76,8 +76,15 @@ class GridMapBuilder(Node):
             # Mark the end point as occupied
             if (0 <= end_x < self.grid_map.shape[1]) and (0 <= end_y < self.grid_map.shape[0]):
                 self.grid_map[end_y, end_x] = 100
+                directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+                for direction in directions:
+                    for i in range(1, 5):
+                        new_x = end_x + direction[0] * i
+                        new_y = end_y + direction[1] * i
+                        if (0 <= new_x < self.grid_map.shape[1]) and (0 <= new_y < self.grid_map.shape[0]):
+                            self.grid_map[new_y, new_x] = 100
 
-        # Publish the occupancy grid
+    # Publish the occupancy grid
         self.publish_grid_map()
 
     def bresenham_line(self, x0, y0, x1, y1):

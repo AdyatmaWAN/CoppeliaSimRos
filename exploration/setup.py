@@ -23,6 +23,7 @@ setup(
             'explore = exploration.explore:main',
             'go = exploration.go:main',
             'input = exploration.input:main',
+            'key = exploration.key:main',
         ],
     },
 )
