@@ -227,7 +227,7 @@ class Explorer(Node):
                         # self.get_logger().info(f'Obstacle detected at {neighbor}')
                         continue
                     for k,l in self.dir:
-                        for n in range(1, 4):
+                        for n in range(1, 5):
                             new_x = neighbor[0] + k * n
                             new_y = neighbor[1] + l * n
                             if 0 <= new_x < grid.shape[1] and 0 <= new_y < grid.shape[0]:

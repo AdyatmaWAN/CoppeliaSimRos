@@ -129,8 +129,8 @@ class Navigate(Node):
 
                 cmd_vel = Twist()
 
-                if distance > 0.05:
-                    cmd_vel.linear.y = np.min([0.4 * distance, 0.2])
+                if distance > 0.1:
+                    cmd_vel.linear.y = np.min([0.8 * distance, 0.4])
                     cmd_vel.angular.z = 2.0 * theta
                 else:
                     cmd_vel.linear.x = 0.0
